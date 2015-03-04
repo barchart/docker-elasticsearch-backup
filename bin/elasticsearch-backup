@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. /etc/environment
+
 if curl -XGET "http://${ES_HOST}/_snapshot/${ES_REPOSITORY_NAME}" | grep -q "\"error\"";  then
 	if test -n "${ES_REPOSITORY_CREATE_}"; then
 		curl -XPUT "http://${ES_HOST}/_snapshot/${ES_REPOSITORY_NAME}" -d "${ES_REPOSITORY_CREATE}"
