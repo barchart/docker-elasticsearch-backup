@@ -1,0 +1,7 @@
+#!/bin/bash
+
+SNAPSHOT=`date +%Y%m%d-%H%M%S`
+curl -XPUT "localhost:9200/_snapshot/${ES_SNAPSHOT_REPOSITORY}/${SNAPSHOT}" -d '{
+	"ignore_unavailable": "${ES_IGNORE_UNAVAILABLE}",
+	"include_global_state": ${ES_GLOBAL_STATE}
+}'
