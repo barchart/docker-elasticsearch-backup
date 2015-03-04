@@ -16,6 +16,7 @@ ADD bin/ /usr/local/bin
 
 # ES configuration vars
 ENV ES_REPOSITORY_NAME backup
+ENV ES_REPOSITORY_PRUNE 7
 ENV ES_HOST elasticsearch
 ENV ES_GLOBAL_STATE true
 ENV ES_IGNORE_UNAVAILABLE true
