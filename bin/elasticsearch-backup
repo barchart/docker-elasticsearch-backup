@@ -13,21 +13,17 @@ if curl -XGET "http://${ES_HOST}/_snapshot/${ES_REPOSITORY_NAME}" | grep -q "\"e
 fi
 
 # Timestamped snapshot
-SNAPSHOT=`date +%Y%m%d-%H%M%S`
-echo "Starting snapshot ${SNAPSHOT}"
-
-curl -XPUT "http://${ES_HOST}/_snapshot/${ES_REPOSITORY_NAME}/${SNAPSHOT}" -d "{
-	\"ignore_unavailable\": \"${ES_IGNORE_UNAVAILABLE}\",
-	\"include_global_state\": ${ES_GLOBAL_STATE}
-}"
-
-echo "Snapshot complete"
+curator snapshot \
+	--repository ${ES_REPOSITORY_NAME} \
+	--wait_for_completion false \
+	--ignore_unavailable ${ES_IGNORE_UNAVAILABLE} \
+	--include_global_state ${ES_GLOBAL_STATE} \
+	indices --all-indices
 
 if test -n "${ES_REPOSITORY_PRUNE}"; then
-	START=$(($ES_REPOSITORY_PRUNE + 1))
-	# TODO cleanup old snapshots
-	for OLD in `curl "http://${ES_HOST}/_snapshot/${ES_REPOSITORY_NAME}/_all?pretty" | grep \"snapshot\" | cut -d \" -f 4 | sort -r | tail -n +${START}`; do
-		echo "Pruning old snapshot: ${OLD}"
-		curl -XDELETE "http://${ES_HOST}/_snapshot/${ES_REPOSITORY_NAME}/${OLD}"
-	done
+	curator delete snapshots --repository ${ES_REPOSITORY_NAME} --older-than ${ES_REPOSITORY_PRUNE} --time-unit days
+fi
+
+if test -n "${ES_INDEX_PRUNE}"; then
+	curator delete indices --older-than ${ES_INDEX_PRUNE} --time-unit days
 fi

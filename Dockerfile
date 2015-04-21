@@ -9,7 +9,8 @@ MAINTAINER Jeremy Jongsma "jeremy@barchart.com"
 
 RUN apt-get --yes update && \
 	apt-get --yes install curl && \
-	apt-get clean
+	apt-get clean && \
+	pip install elasticsearch-curator
 
 ADD cron.d/ /etc/cron.d
 ADD bin/ /usr/local/bin
