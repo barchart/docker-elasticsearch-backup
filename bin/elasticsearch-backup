@@ -24,11 +24,13 @@ if test -n "${ES_REPOSITORY_PRUNE}"; then
 	curator --host ${ES_HOST} --port ${ES_PORT} delete snapshots \
 		--repository ${ES_REPOSITORY_NAME} \
 		--older-than ${ES_REPOSITORY_PRUNE} \
-		--time-unit days
+		--time-unit days \
+		--timestring curator-%Y%m%d%H%M%S
 fi
 
 if test -n "${ES_INDEX_PRUNE}"; then
 	curator --host ${ES_HOST} --port ${ES_PORT} delete indices \
 		--older-than ${ES_INDEX_PRUNE} \
-		--time-unit days
+		--time-unit days \
+		--timestring ${ES_INDEX_PATTERN}
 fi
