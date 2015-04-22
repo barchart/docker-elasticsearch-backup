@@ -4,11 +4,11 @@
 # allow propagating to child jobs
 . /etc/environment
 
-if curl -XGET "http://${ES_HOST}:${ES_PORT}/_snapshot/${ES_REPOSITORY_NAME}" | grep -q "\"error\"";  then
+if curl -s -XGET "http://${ES_HOST}:${ES_PORT}/_snapshot/${ES_REPOSITORY_NAME}" | grep -q "\"error\"";  then
 	echo "No repository exists"
 	if test -n "${ES_REPOSITORY_CREATE}"; then
 		echo "Creating new repository as ${ES_REPOSITORY_CREATE}"
-		curl -XPUT "http://${ES_HOST}:${ES_PORT}/_snapshot/${ES_REPOSITORY_NAME}" -d "${ES_REPOSITORY_CREATE}"
+		curl -s -XPUT "http://${ES_HOST}:${ES_PORT}/_snapshot/${ES_REPOSITORY_NAME}" -d "${ES_REPOSITORY_CREATE}"
 	fi
 fi
 
