@@ -14,7 +14,6 @@ RUN apt-get --yes update && \
 
 ADD cron.d/ /etc/cron.d
 ADD bin/ /usr/local/bin
-RUN mkdir -p /var/log/ext/misc
 
 # ES configuration vars
 ENV ES_REPOSITORY_NAME backup

@@ -1,1 +1,1 @@
-0 4 * * * root /usr/local/bin/elasticsearch-backup >> /var/log/ext/misc/elasticsearch-backup.log 2>&1
+0 4 * * * root /usr/local/bin/elasticsearch-backup >> /var/log/ext/elasticsearch-backup.log 2>&1
