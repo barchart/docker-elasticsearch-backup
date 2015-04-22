@@ -4,26 +4,31 @@
 # allow propagating to child jobs
 . /etc/environment
 
-if curl -XGET "http://${ES_HOST}/_snapshot/${ES_REPOSITORY_NAME}" | grep -q "\"error\"";  then
+if curl -XGET "http://${ES_HOST}:${ES_PORT}/_snapshot/${ES_REPOSITORY_NAME}" | grep -q "\"error\"";  then
 	echo "No repository exists"
 	if test -n "${ES_REPOSITORY_CREATE}"; then
 		echo "Creating new repository as ${ES_REPOSITORY_CREATE}"
-		curl -XPUT "http://${ES_HOST}/_snapshot/${ES_REPOSITORY_NAME}" -d "${ES_REPOSITORY_CREATE}"
+		curl -XPUT "http://${ES_HOST}:${ES_PORT}/_snapshot/${ES_REPOSITORY_NAME}" -d "${ES_REPOSITORY_CREATE}"
 	fi
 fi
 
 # Timestamped snapshot
-curator snapshot \
+curator --host ${ES_HOST} --port ${ES_PORT} snapshot \
 	--repository ${ES_REPOSITORY_NAME} \
 	--wait_for_completion false \
-	--ignore_unavailable ${ES_IGNORE_UNAVAILABLE} \
+	--ignore_unavailable \
 	--include_global_state ${ES_GLOBAL_STATE} \
 	indices --all-indices
 
 if test -n "${ES_REPOSITORY_PRUNE}"; then
-	curator delete snapshots --repository ${ES_REPOSITORY_NAME} --older-than ${ES_REPOSITORY_PRUNE} --time-unit days
+	curator --host ${ES_HOST} --port ${ES_PORT} delete snapshots \
+		--repository ${ES_REPOSITORY_NAME} \
+		--older-than ${ES_REPOSITORY_PRUNE} \
+		--time-unit days
 fi
 
 if test -n "${ES_INDEX_PRUNE}"; then
-	curator delete indices --older-than ${ES_INDEX_PRUNE} --time-unit days
+	curator --host ${ES_HOST} --port ${ES_PORT} delete indices \
+		--older-than ${ES_INDEX_PRUNE} \
+		--time-unit days
 fi
